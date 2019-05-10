@@ -57,7 +57,6 @@
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		9286F760F61745A19EEEF499 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5C00192AEA23445FAA09B6AF /* Entypo.ttf */; };
 		956622CF24A04E609EF945CE /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D64D7F85B5AA4C00A4EA1891 /* Zocial.ttf */; };
-		964EE9A5EFA744DD8F0B18F5 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 45EEE321C8F146089BB8413E /* libBVLinearGradient.a */; };
 		A03257A325A849139EEB11D5 /* libReact Native Open Settings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AA6C48A04374052879B6F18 /* libReact Native Open Settings.a */; };
 		A0A6A8EA208766CF0081AA46 /* GeoLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = A0A6A8E9208766CF0081AA46 /* GeoLocation.m */; };
 		A0CFED7B2088B8BD00558AA7 /* SFUIText-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A585B1F392E14873AABBD00A /* SFUIText-SemiBold.ttf */; };
@@ -618,7 +617,6 @@
 				CB4240B0E3EB4F26A848B8B8 /* libRNI18n.a in Frameworks */,
 				630040FBB7074DC88912C2DC /* libRCTCamera.a in Frameworks */,
 				5A82B35EB2734F3282482AE4 /* libRNFS.a in Frameworks */,
-				964EE9A5EFA744DD8F0B18F5 /* libBVLinearGradient.a in Frameworks */,
 				C4C14A4D3BD2D3A0DE574D31 /* libPods-Skjutsgruppen.a in Frameworks */,
 				BB17D4872085BC4100F7187C /* libTPSTwitterModule.a in Frameworks */,
 				C7C6AB816D244F60B5C115B6 /* libRNFirebase.a in Frameworks */,
@@ -2382,6 +2380,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};

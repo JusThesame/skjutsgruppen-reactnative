@@ -864,6 +864,8 @@ class TripDetail extends Component {
       });
     }
 
+    console.log('trupdetail =========== ', tripDate, '====== ', selectedDate, ' ===== ',markedDates);
+
     return (
       <Modal
         animationType="fade"
