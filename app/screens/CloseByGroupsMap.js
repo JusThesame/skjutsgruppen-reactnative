@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import ToolBar from '@components/utils/toolbar';
 import { withNearByGroups } from '@services/apollo/group';
-import MapView from 'react-native-maps';
+import { MapView, Marker as ClusterMarker } from 'react-native-maps';
 import Marker from '@components/map/marker';
 import { compose } from 'react-apollo';
 import { withNavigation } from 'react-navigation';
 import moment from 'moment';
+import ClusteredMapView from 'react-native-maps-super-cluster';
+
 
 class CloseByGroupsMapView extends Component {
   static navigationOptions = {
@@ -89,41 +91,56 @@ class CloseByGroupsMapView extends Component {
   }
 
   renderGroups = () => {
-    let coordinate = {};
+    const coordinate = {};
     const { groups } = this.state;
 
     if (groups && groups.length > 0) {
-      return groups.map((group) => {
-        if (group.isBlocked) return null;
-
-        if (group.outreach === 'area') {
-          coordinate = {
-            latitude: group.areaCoordinates[1],
-            longitude: group.areaCoordinates[0],
-          };
-        } else if (group.TripStart && group.TripStart.coordinates) {
-          coordinate = {
-            latitude: group.TripStart.coordinates[1],
-            longitude: group.TripStart.coordinates[0],
-          };
-        }
-
-        if (!coordinate.latitude || !coordinate.longitude) return null;
-        return (
-          <Marker
-            key={`${group.id}-${moment().unix()}`}
-            onPress={(e) => {
-              e.stopPropagation();
-              this.onMarkerPress(group);
-            }}
-            coordinate={coordinate}
-            image={group.photo}
-          />
-        );
-      });
+      return groups.map(group => this.renderMarker(group));
     }
 
     return null;
+  }
+
+  renderMarker=(group) => {
+    let coordinate = {};
+    if (group.isBlocked) return null;
+
+    if (group.outreach === 'area') {
+      coordinate = {
+        latitude: group.areaCoordinates[1],
+        longitude: group.areaCoordinates[0],
+      };
+    } else if (group.TripStart && group.TripStart.coordinates) {
+      coordinate = {
+        latitude: group.TripStart.coordinates[1],
+        longitude: group.TripStart.coordinates[0],
+      };
+    }
+
+    if (!coordinate.latitude || !coordinate.longitude) return null;
+    return (
+      <Marker
+        key={`${group.id}-${moment().unix()}`}
+        onPress={(e) => {
+          e.stopPropagation();
+          this.onMarkerPress(group);
+        }}
+        coordinate={coordinate}
+        image={group.photo || ''}
+      />
+    );
+  }
+  renderCluster = (cluster, onPress) => {
+    const pointCount = cluster.pointCount;
+    const coordinate = cluster.coordinate;
+    // const clusterId = cluster.clusterId;
+
+    // const clusteringEngine = this.map.getClusteringEngine();
+    // const clusteredPoints = clusteringEngine.getLeaves(clusterId, 100);
+
+    return (
+      <Marker clustered={pointCount} coordinate={coordinate} onPress={onPress} />
+    );
   }
 
   renderCurrentLocation = () => {
@@ -146,19 +163,37 @@ class CloseByGroupsMapView extends Component {
 
   render() {
     const { origin } = this.props;
+    const { groups } = this.state;
+    const { latitude, longitude } = origin;
+    const INIT_REGION = {
+      latitude,
+      longitude,
+      latitudeDelta: 12,
+      longitudeDelta: 12,
+    };
+    const newGroup = groups.map(group => ({
+      ...group,
+      location: {
+        latitude: group.TripStart.coordinates[1],
+        longitude: group.TripStart.coordinates[0],
+      },
+    }));
 
     return (
-      <MapView
-        provider={'google'}
-        initialRegion={origin}
-        style={StyleSheet.absoluteFill}
+      <ClusteredMapView
+        style={{ flex: 1 }}
         ref={(c) => { this.mapView = c; }}
-        cacheEnabled
-        onRegionChangeComplete={region => this.fetchMoreGroups(region)}
+        data={newGroup || []}
+        initialRegion={INIT_REGION}
+        renderCluster={this.renderCluster}
+        renderMarker={this.renderMarker}
       >
-        {this.renderCurrentLocation()}
-        {this.renderGroups()}
-      </MapView >
+        <Marker
+          onPress={e => e.stopPropagation()}
+          coordinate={{ latitude, longitude }}
+          current
+        />
+      </ClusteredMapView>
     );
   }
 }
