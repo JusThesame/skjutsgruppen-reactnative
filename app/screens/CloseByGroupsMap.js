@@ -5,11 +5,11 @@ import ToolBar from '@components/utils/toolbar';
 import { withNearByGroups } from '@services/apollo/group';
 import { MapView, Marker as ClusterMarker } from 'react-native-maps';
 import Marker from '@components/map/marker';
+import { FEED_TYPE_OFFER, FEED_TYPE_WANTED, FEED_TYPE_PUBLIC_TRANSPORT, FEED_TYPE_GROUP } from '@config/constant';
 import { compose } from 'react-apollo';
 import { withNavigation } from 'react-navigation';
 import moment from 'moment';
 import ClusteredMapView from 'react-native-maps-super-cluster';
-
 
 class CloseByGroupsMapView extends Component {
   static navigationOptions = {
@@ -90,15 +90,19 @@ class CloseByGroupsMapView extends Component {
     }
   }
 
-  renderGroups = () => {
-    const coordinate = {};
-    const { groups } = this.state;
-
-    if (groups && groups.length > 0) {
-      return groups.map(group => this.renderMarker(group));
+  handleClusterPress = (children, cluster) => {
+    const { navigation } = this.props;
+    const lat = cluster[0].TripStart.coordinates[0];
+    const long = cluster[0].TripStart.coordinates[1];
+    for (let i = 1; i < cluster.length; i++) {
+      if (lat !== cluster[i].TripStart.coordinates[0] || long !== cluster[i].TripStart.coordinates[1]) {
+        return;
+      }
     }
-
-    return null;
+    const name = cluster[0].TripStart.name;
+    const lat1 = cluster[0].TripStart.coordinates[0];
+    const long1 = cluster[0].TripStart.coordinates[1];
+    navigation.navigate('Search', { fromObj: { name, coordinates: [lat1, long1] }, toObj: { name: '', countryCode: '', coordinates: [] }, direction: 'anywhere', dates: [], filters: [FEED_TYPE_GROUP, FEED_TYPE_OFFER, FEED_TYPE_PUBLIC_TRANSPORT, FEED_TYPE_WANTED] });
   }
 
   renderMarker=(group) => {
@@ -130,13 +134,10 @@ class CloseByGroupsMapView extends Component {
       />
     );
   }
+
   renderCluster = (cluster, onPress) => {
     const pointCount = cluster.pointCount;
     const coordinate = cluster.coordinate;
-    // const clusterId = cluster.clusterId;
-
-    // const clusteringEngine = this.map.getClusteringEngine();
-    // const clusteredPoints = clusteringEngine.getLeaves(clusterId, 100);
 
     return (
       <Marker clustered={pointCount} coordinate={coordinate} onPress={onPress} />
@@ -168,8 +169,8 @@ class CloseByGroupsMapView extends Component {
     const INIT_REGION = {
       latitude,
       longitude,
-      latitudeDelta: 12,
-      longitudeDelta: 12,
+      latitudeDelta: 2,
+      longitudeDelta: 2,
     };
     const newGroup = groups.map(group => ({
       ...group,
@@ -187,6 +188,8 @@ class CloseByGroupsMapView extends Component {
         initialRegion={INIT_REGION}
         renderCluster={this.renderCluster}
         renderMarker={this.renderMarker}
+        preserveClusterPressBehavior
+        onClusterPress={this.handleClusterPress}
       >
         <Marker
           onPress={e => e.stopPropagation()}

@@ -97,8 +97,8 @@ class CloseByGroupsMapWindow extends Component {
     const INIT_REGION = {
       latitude,
       longitude,
-      latitudeDelta: 12,
-      longitudeDelta: 12,
+      latitudeDelta: 0.06,
+      longitudeDelta: 0.06,
     };
 
     if (loading) { return null; }

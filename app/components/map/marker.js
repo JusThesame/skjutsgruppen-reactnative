@@ -220,6 +220,7 @@ Marker.propTypes = {
   count: PropTypes.number,
   current: PropTypes.bool,
   tripType: PropTypes.string,
+  clustered: PropTypes.number,
 };
 
 Marker.defaultProps = {

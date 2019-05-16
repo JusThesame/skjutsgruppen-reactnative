@@ -8,6 +8,7 @@ import _find from 'lodash/find';
 
 import TouchableHighlight from '@components/touchableHighlight';
 import { AppText } from '@components/utils/texts';
+import costs from '../../garden/costs';
 
 const styles = StyleSheet.create({
   lightText: {
@@ -120,6 +121,7 @@ class PlacesInput extends PureComponent {
 
   renderModal() {
     const { placeholder, label, direction, currentLocation } = this.props;
+    console.log(direction, 'direction insside place input');
     return (
       <Modal
         visible={this.state.showModal}
@@ -150,7 +152,7 @@ class PlacesInput extends PureComponent {
       <View style={wrapperStyle}>
         <View style={[styles.inputWrapper]}>
           <TouchableHighlight
-            style={[styles.placeInput, { height }, inputStyle ]}
+            style={[styles.placeInput, { height }, inputStyle]}
             onPress={() => this.setState({ showModal: true })}
           >
             {this.getPlaceName()}
