@@ -219,7 +219,8 @@ class Search extends Component {
           return obj;
         }, {});
       }
-
+      // this.setState({ from: place, directionFrom: direction });
+      console.log('search ==== willmount ====== ', navigation.state.params);
       this.setState({
         from: fromObj,
         to: toObj,
@@ -268,6 +269,7 @@ class Search extends Component {
   }
 
   setStartPlace = ({ place, direction }) => {
+    console.log('onsearch start place set ==============', place, direction);
     this.setState({ from: place, directionFrom: direction });
   }
 
@@ -307,6 +309,8 @@ class Search extends Component {
       Alert.alert('Error!!', trans('search.either_from_of_to_is_required'));
       error += 1;
     }
+
+    console.log(this.state);
 
     if (error === 0) {
       navigation.navigate('SearchResult', {

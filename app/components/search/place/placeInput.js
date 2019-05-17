@@ -75,6 +75,7 @@ class PlacesInput extends PureComponent {
 
   componentWillMount() {
     const { defaultValue, defaultDirection } = this.props;
+    console.log('placeInput === will oumnt', this.props);
     this.setState({ place: defaultValue, directionText: defaultDirection });
   }
 
@@ -83,6 +84,7 @@ class PlacesInput extends PureComponent {
   }
 
   onPress = ({ place, source, direction }) => {
+    console.log('placeInput onpress ========', place, direction);
     this.setState({ place, directionText: direction, direction, showModal: false }, () => {
       this.props.onChangeText({ place, source, direction });
     });
